@@ -34,9 +34,9 @@
 ## 📖 Hướng dẫn cài đặt và sử dụng
 1. Clone repository
 bash
-git clone https://github.com/your-username/SE215.P11-Last_mile_delivery.git
+git clone https://github.com/FiveM-UIT/SE215.P11-Last_mile_delivery.git
 
-2. Khởi chạy ứng dụng
+3. Khởi chạy ứng dụng
 cd frontend
 npm install
 npm start
