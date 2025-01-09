@@ -17,7 +17,7 @@
 |-------|--------|---------------------|----------------------|-------------|
 |   1   |22521312|    Trần Nhật Tân    |22521312@gm.uit.edu.vn|[Shiengg](https://github.com/Shiengg) |
 |   2   |22521693|    Nguyễn Duy Vũ    |22521693@gm.uit.edu.vn|[Torrence](https://github.com/LilRaynee) |
-|   3   |22521474|    Tô Vĩnh Tiến     |22521474@gm.uit.edu.vn|[???](https://github.com/#) |
+|   3   |22521474|    Tô Vĩnh Tiến     |22521474@gm.uit.edu.vn|[Terry-UIT](https://github.com/Terry-UIT) |
 |   4   |22521693|    Đỗ Hồng Quân     |22521693@gm.uit.edu.vn|[???](https://github.com/#) |
 
 
@@ -37,9 +37,10 @@ bash
 git clone https://github.com/FiveM-UIT/SE215.P11-Last_mile_delivery.git
 
 3. Khởi chạy ứng dụng
-cd frontend
-npm install
-npm start
+- npm install (ở thư mục gốc)
+- cd frontend
+- npm install (ở thư mục frontend)
+- npm start (ở thư mục frontend)
 
 ## 📊 Tài liệu liên quan
 - [Link đến tài liệu thiết kế]
