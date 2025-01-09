@@ -1,6 +1,7 @@
 # Last Mile Delivery - Đồ án môn HCI (Human-Computer Interaction)
 
-## Giới thiệu môn học:Giao tiếp người máy
+## Giới thiệu môn học: 
+* **Tên môn học:** Giao tiếp người máy
 * **Mã môn học:** SE215
 * **Mã lớp:** SE215.P11
 * **Giảng viên**: Nguyễn Công Hoan
