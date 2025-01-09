@@ -12,7 +12,7 @@
 - Áp dụng các nguyên tắc thiết kế HCI vào thực tế
 - Phát triển giải pháp đáp ứng nhu cầu của người dùng cuối
 
-## Nhóm 48:
+## Nhóm 03:
 |**STT**|**MSSV**|     **Họ và tên**   |       **Email**      |  **Github** |
 |-------|--------|---------------------|----------------------|-------------|
 |   1   |22521312|    Trần Nhật Tân    |22521312@gm.uit.edu.vn|[Shiengg](https://github.com/Shiengg) |
