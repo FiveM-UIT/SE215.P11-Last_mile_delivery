@@ -34,9 +34,9 @@ const createMarkerElement = (index, isFirst, isLast, total) => {
   el.className = 'marker';
   
   // Xác định màu dựa vào vị trí
-  const backgroundColor = isFirst ? '#1B5E20' :  // Điểm đầu màu xanh lá đậm
-                         isLast ? '#B71C1C' :    // Điểm cuối màu đỏ đậm
-                         '#1976D2';              // Điểm giữa màu xanh dương
+  const backgroundColor = isFirst ? '#1B5E20' :  
+                         isLast ? '#B71C1C' :    
+                         '#1976D2';              
 
   // Style cho marker container
   Object.assign(el.style, {
