@@ -8,7 +8,7 @@
         "distDir": "frontend/build",
         "installCommand": "cd frontend && npm install",
         "buildCommand": "cd frontend && npm run build",
-        "nodeVersion": "16.x"
+        "nodeVersion": "22.x"
       }
     }
   ],

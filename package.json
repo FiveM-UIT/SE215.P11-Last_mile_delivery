@@ -15,6 +15,9 @@
   "description": "![image](https://github.com/user-attachments/assets/d1087970-92bb-4078-ac1e-f55063ae9e52)\r ---------------------\r ## Đồ án cuối kì môn Đồ án 1 - SE121.P11 - Xây dựng Ứng dụng Last Mile Delivery\r ## Nhóm xx:\r |**STT**|**MSSV**|     **Họ và tên**   |       **Email**      |\r |-------|--------|---------------------|----------------------|\r |   1   |22521312|    Trần Nhật Tân    |22521312@gm.uit.edu.vn|\r |   2   |22521693|    Nguyễn Duy Vũ    |22521693@gm.uit.edu.vn|",
   "version": "1.0.0",
   "main": "index.js",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "start": "cd frontend && npm start",
     "build": "cd frontend && npm install && npm run build",
