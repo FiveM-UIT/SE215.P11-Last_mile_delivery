@@ -388,54 +388,53 @@ const CustomerMap = () => {
   return (
     <div className="h-screen flex flex-col bg-gray-50">
       {/* Responsive Header */}
-      <div className="bg-white shadow-md px-3 sm:px-4 py-2 sm:py-3">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
+      <div className="bg-white shadow-md">
+        <div className="w-full">
+          <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between pl-4 pr-3 sm:pr-4 py-2 sm:py-3">
             {/* Mobile-optimized navigation and info */}
             <div className="flex items-start sm:items-center space-x-3 sm:space-x-4">
               <button
                 onClick={() => navigate(-1)}
-                className="p-2 sm:px-3 sm:py-2 text-gray-700 hover:text-blue-600 
+                className="p-2 sm:p-2.5 text-gray-700 hover:text-blue-600 
                   bg-gray-100 hover:bg-blue-50 rounded-lg transition-all duration-200
                   focus:outline-none focus:ring-2 focus:ring-blue-500"
                 aria-label="Back to tracking page"
               >
-                <FiArrowLeft className="w-5 h-5 sm:mr-2" />
-                <span className="hidden sm:inline font-medium">Back</span>
+                <FiArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
               
               <div>
-                <h1 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center">
-                  <FiPackage className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-blue-600" />
-                  <span className="hidden sm:inline">Tracking Details</span>
-                  <span className="sm:hidden">Tracking</span>
-                </h1>
-                <div className="mt-0.5 flex items-center text-xs sm:text-sm text-gray-600">
-                  <span className="font-medium">Route:</span>
-                  <span className="ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 sm:py-1 
-                    bg-blue-100 text-blue-800 rounded-md">
-                    {routeCode}
-                  </span>
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <h1 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center">
+                    <FiPackage className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-blue-600" />
+                    <span className="hidden sm:inline">Tracking Details</span>
+                    <span className="sm:hidden">Tracking</span>
+                  </h1>
+                  {route && (
+                    <div className="flex items-center bg-gray-50 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-gray-100">
+                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#00FF00] rounded-full animate-pulse 
+                        shadow-[0_0_8px_rgba(0,255,0,0.5)]" />
+                      <span className="ml-1.5 text-xs sm:text-sm font-medium text-gray-700">Live</span>
+                    </div>
+                  )}
+                </div>
+                <div className="mt-0.5 flex items-center space-x-3">
+                  <div className="flex items-center text-xs sm:text-sm text-gray-600">
+                    <span className="font-medium">Route:</span>
+                    <span className="ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 sm:py-1 
+                      bg-blue-100 text-blue-800 rounded-md">
+                      {routeCode}
+                    </span>
+                  </div>
+                  {route && (
+                    <div className="flex items-center text-xs sm:text-sm text-gray-600">
+                      <FiClock className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-blue-600" />
+                      <span>ETA: {route.estimated_time || 'Calculating...'}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
-
-            {/* Mobile-optimized status */}
-            {route && (
-              <div className="flex items-center justify-between sm:justify-end 
-                space-x-3 sm:space-x-6 bg-gray-50 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg">
-                <div className="flex items-center">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2" />
-                  <span className="text-xs sm:text-sm font-medium text-gray-700">Live</span>
-                </div>
-                <div className="text-xs sm:text-sm text-gray-600">
-                  <div className="flex items-center">
-                    <FiClock className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-blue-600" />
-                    <span>ETA: {route.estimated_time || 'Calculating...'}</span>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>

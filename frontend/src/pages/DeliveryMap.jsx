@@ -498,28 +498,42 @@ const DeliveryMap = () => {
   return (
     <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
       {/* Responsive Header */}
-      <div className="bg-white shadow-md px-3 sm:px-4 py-2 sm:py-3">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
-            {/* Mobile-optimized navigation and info */}
-            <div className="flex items-center space-x-3">
+      <div className="bg-white shadow-md">
+        <div className="w-full">
+          <div className="flex items-center justify-between pl-4 pr-3 sm:pr-4 py-2 sm:py-3">
+            {/* Left side with back button and route info */}
+            <div className="flex items-center space-x-2 sm:space-x-3">
               <button
                 onClick={() => navigate(-1)}
-                className="p-2.5 text-gray-700 hover:text-blue-600 
+                className="p-2 sm:p-2.5 text-gray-700 hover:text-blue-600 
                   bg-gray-100 hover:bg-blue-50 rounded-lg transition-all duration-200
                   focus:outline-none focus:ring-2 focus:ring-blue-500"
                 aria-label="Back to routes page"
               >
-                <FiArrowLeft className="w-5 h-5" />
+                <FiArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
               
-              <div className="flex-1">
-                <h1 className="text-lg font-bold text-gray-900 flex items-center">
-                  <FiPackage className="w-5 h-5 mr-2 text-blue-600" />
-                  Route Details
-                </h1>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <h1 className="text-base sm:text-lg font-bold text-gray-900 flex items-center truncate">
+                    <FiPackage className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 text-blue-600 flex-shrink-0" />
+                    <span className="truncate">Route Details</span>
+                  </h1>
+                  {route && (
+                    <div className="flex items-center bg-gray-50 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-gray-100">
+                      <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#00FF00] rounded-full animate-pulse 
+                        shadow-[0_0_8px_rgba(0,255,0,0.5)]" />
+                      <div className="ml-1.5 sm:ml-2 flex items-baseline">
+                        <span className="text-sm sm:text-base font-bold text-gray-800">
+                          {Math.ceil(route.distance)}
+                        </span>
+                        <span className="ml-0.5 text-xs sm:text-sm font-medium text-gray-600">km</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 {route && (
-                  <div className="mt-0.5 flex items-center text-xs text-gray-600">
+                  <div className="mt-0.5 flex items-center text-xs sm:text-sm text-gray-600">
                     <span className="font-medium">Code:</span>
                     <span className="ml-1 px-1.5 py-0.5 bg-blue-100 text-blue-800 rounded-md">
                       {route.route_code}
@@ -529,59 +543,71 @@ const DeliveryMap = () => {
               </div>
             </div>
 
-            {/* Mobile-optimized status */}
-            {route && (
-              <div className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg">
-                <div className="flex items-center">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2" />
-                  <span className="text-xs font-medium text-gray-700">Live Tracking</span>
-                </div>
-                <div className="text-xs text-gray-600 ml-4">
-                  <div className="flex items-center">
-                    <FiClock className="w-3 h-3 mr-1 text-blue-600" />
-                    <span>~{Math.ceil(route.distance * 3)} mins</span>
-                  </div>
-                </div>
-              </div>
-            )}
+            {/* Right side with theme toggle */}
+            <div className="flex items-center">
+              <button
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className="p-2 text-gray-700 hover:text-blue-600 
+                  bg-gray-100 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                aria-label="Toggle theme"
+              >
+                {isDarkMode ? (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                      d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  </svg>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content Area with Sidebar */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden relative">
         {/* Left Sidebar - Full screen on mobile when open */}
         <div className={`${showSidebar ? 'w-full sm:w-96' : 'w-0'} 
           transition-all duration-300 ease-in-out flex-shrink-0
-          fixed sm:relative left-0 top-[57px] sm:top-0 h-[calc(100vh-57px)] sm:h-auto
+          fixed sm:relative inset-0 sm:inset-auto pt-[57px] sm:pt-0
           bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 shadow-lg z-20`}>
           <div className={`h-full flex flex-col ${showSidebar ? 'w-full sm:w-96' : 'w-0'} overflow-hidden`}>
             {/* Sidebar Header */}
-            <div className="p-4 bg-white/20 backdrop-blur-sm border-b border-white/20">
+            <div className="p-3 sm:p-4 bg-white/20 backdrop-blur-sm border-b border-white/20">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-white flex items-center">
-                  <FiMapPin className="w-5 h-5 mr-2 text-white" />
+                <h2 className="text-base sm:text-lg font-semibold text-white flex items-center">
+                  <FiMapPin className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 text-white" />
                   Route Details
                 </h2>
                 <button
                   onClick={() => setShowSidebar(false)}
-                  className="p-2.5 hover:bg-white/20 rounded-lg
+                  className="p-2 sm:p-2.5 hover:bg-white/20 rounded-lg
                     transition-colors duration-200"
                   aria-label="Close sidebar"
                 >
-                  <FiX className="w-6 h-6 text-white" />
+                  <FiX className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </button>
               </div>
               {route && (
-                <div className="mt-2 flex items-center text-sm text-white">
-                  <FiPackage className="w-4 h-4 mr-2" />
-                  Route Code: <span className="ml-1 font-medium bg-white/20 px-2 py-0.5 rounded">{route.route_code}</span>
+                <div className="mt-2 sm:mt-3 space-y-1.5 sm:space-y-2">
+                  <div className="flex items-center text-xs sm:text-sm text-white">
+                    <FiPackage className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
+                    Route Code: <span className="ml-1 font-medium bg-white/20 px-1.5 sm:px-2 py-0.5 rounded">{route.route_code}</span>
+                  </div>
+                  <div className="flex items-center text-xs sm:text-sm text-white">
+                    <FiClock className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
+                    Total Distance: <span className="ml-1 font-medium bg-white/20 px-1.5 sm:px-2 py-0.5 rounded">{Math.ceil(route.distance)} km</span>
+                  </div>
                 </div>
               )}
             </div>
 
             {/* Marker Information - Optimized for touch */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 custom-scrollbar">
               {route?.shops.map((shop, index) => {
                 const isFirst = index === 0;
                 const isLast = index === route.shops.length - 1;
@@ -629,41 +655,60 @@ const DeliveryMap = () => {
 
                       {/* Marker Details */}
                       <div className="mt-4 space-y-3 bg-white/10 rounded-lg p-3">
-                        <div className="flex items-start space-x-2 text-sm">
-                          <FiMapPin className="w-4 h-4 text-white mt-0.5 flex-shrink-0" />
-                          <span className="text-white">
-                            {shop.shop_details.address}
-                          </span>
-                        </div>
-                        {shop.shop_details.phone && (
-                          <div className="flex items-center space-x-2 text-sm">
-                            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                            </svg>
-                            <span className="text-white">
-                              {shop.shop_details.phone}
-                            </span>
+                        <div className="flex items-start">
+                          <div className="flex-shrink-0 mt-1">
+                            <FiMapPin className="w-4 h-4 text-white" />
                           </div>
-                        )}
+                          <div className="ml-2 flex-1">
+                            <div className="text-sm text-white/90 font-medium">
+                              Delivery Location:
+                            </div>
+                            <div className="mt-0.5 text-sm text-white leading-relaxed">
+                              {shop.shop_details.address}
+                            </div>
+                            {shop.shop_details.phone && (
+                              <div className="mt-2 flex items-center text-sm text-white/90">
+                                <svg className="w-4 h-4 text-white/80 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                </svg>
+                                <span className="font-medium">Contact: {shop.shop_details.phone}</span>
+                              </div>
+                            )}
+                            {shop.shop_details.note && (
+                              <div className="mt-2 flex items-start text-sm text-white/90">
+                                <svg className="w-4 h-4 text-white/80 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                                <span>Note: {shop.shop_details.note}</span>
+                              </div>
+                            )}
+                            {isFirst && (
+                              <div className="mt-2 flex items-center text-sm text-white/90">
+                                <svg className="w-4 h-4 text-white/80 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                                </svg>
+                                <span>Pickup Location</span>
+                              </div>
+                            )}
+                            {isLast && (
+                              <div className="mt-2 flex items-center text-sm text-white/90">
+                                <svg className="w-4 h-4 text-white/80 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                    d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                                </svg>
+                                <span>Delivery Location</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 );
               })}
-            </div>
-
-            {/* Sidebar Footer - Sticky on mobile */}
-            <div className="p-4 bg-white/20 backdrop-blur-sm border-t border-white/20 sticky bottom-0">
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center bg-white/10 px-3 py-2 rounded-full">
-                  <FiClock className="w-4 h-4 mr-2 text-white" />
-                  <span className="text-white">Total Distance</span>
-                </div>
-                <span className="font-medium text-white bg-white/20 px-3 py-2 rounded-full">
-                  {route ? `${Math.ceil(route.distance)} km` : '--'}
-                </span>
-              </div>
             </div>
           </div>
         </div>
@@ -794,28 +839,30 @@ const DeliveryMap = () => {
         </div>
       </div>
 
-      <style jsx>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: 2px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.2);
-          border-radius: 2px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(255, 255, 255, 0.3);
-        }
-
-        @media (max-width: 640px) {
+      <style>
+        {`
           .custom-scrollbar::-webkit-scrollbar {
-            width: 0px;
+            width: 4px;
           }
-        }
-      `}</style>
+          .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+          }
+
+          @media (max-width: 640px) {
+            .custom-scrollbar::-webkit-scrollbar {
+              width: 0px;
+            }
+          }
+        `}
+      </style>
     </div>
   );
 };
