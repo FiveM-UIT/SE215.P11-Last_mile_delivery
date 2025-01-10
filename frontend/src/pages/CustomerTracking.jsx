@@ -281,7 +281,7 @@ const StudentInfoDialog = ({ isOpen, onClose }) => (
 
                   <div className="text-center text-gray-500 text-sm">
                     <p>Last Mile Delivery Management System</p>
-                    <p>Project 1 - 2024</p>
+                    <p>Human Computer Interaction</p>
                   </div>
                 </div>
               </div>
