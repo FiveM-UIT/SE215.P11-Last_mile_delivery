@@ -31,41 +31,85 @@ const routeStyles = {
 // Thêm styles cho markers
 const createMarkerElement = (index, isFirst, isLast, total) => {
   const el = document.createElement('div');
-  el.className = 'marker';
+  el.className = 'custom-marker';
   
   // Xác định màu dựa vào vị trí
-  const backgroundColor = isFirst ? '#1B5E20' :  
-                         isLast ? '#B71C1C' :    
-                         '#1976D2';              
+  const backgroundColor = isFirst ? '#22C55E' :  // Xanh lá tươi hơn
+                         isLast ? '#EF4444' :    // Đỏ tươi hơn
+                         '#3B82F6';              // Xanh dương tươi hơn
 
-  // Style cho marker container
-  Object.assign(el.style, {
-    backgroundColor: 'white',
-    width: '36px',
-    height: '36px',
+  // Container cho marker
+  const markerContainer = document.createElement('div');
+  markerContainer.className = 'marker-container';
+  
+  // Marker chính
+  const markerDot = document.createElement('div');
+  markerDot.className = 'marker-dot';
+  
+  // Số thứ tự
+  const markerLabel = document.createElement('div');
+  markerLabel.className = 'marker-label';
+  markerLabel.innerHTML = `${index}`;
+
+  // Style cho container
+  Object.assign(markerContainer.style, {
+    position: 'relative',
+    width: '40px',
+    height: '40px',
+    cursor: 'pointer',
+    transform: 'translate(-50%, -50%)'
+  });
+
+  // Style cho dot
+  Object.assign(markerDot.style, {
+    position: 'absolute',
+    bottom: '0',
+    left: '50%',
+    width: '14px',
+    height: '14px',
+    backgroundColor: backgroundColor,
     borderRadius: '50%',
-    border: '3px solid ' + backgroundColor,
+    transform: 'translate(-50%, 50%)',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+    border: '2px solid white'
+  });
+
+  // Style cho label
+  Object.assign(markerLabel.style, {
+    position: 'absolute',
+    top: '0',
+    left: '50%',
+    transform: 'translate(-50%, 0)',
+    backgroundColor: 'white',
+    width: '32px',
+    height: '32px',
+    borderRadius: '50%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
     fontSize: '14px',
     fontWeight: 'bold',
     color: backgroundColor,
-    cursor: 'pointer',
-    transition: 'transform 0.2s',
-    willChange: 'transform'
+    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+    border: '2px solid ' + backgroundColor,
+    transition: 'all 0.2s ease'
   });
 
   // Thêm hover effect
-  el.onmouseenter = () => {
-    el.style.transform = 'scale(1.1)';
+  markerContainer.onmouseenter = () => {
+    markerLabel.style.transform = 'translate(-50%, -2px)';
+    markerLabel.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
   };
-  el.onmouseleave = () => {
-    el.style.transform = 'scale(1)';
+  markerContainer.onmouseleave = () => {
+    markerLabel.style.transform = 'translate(-50%, 0)';
+    markerLabel.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15)';
   };
 
-  el.innerHTML = `${index}`;
+  // Ghép các phần tử lại
+  markerContainer.appendChild(markerDot);
+  markerContainer.appendChild(markerLabel);
+  el.appendChild(markerContainer);
+
   return el;
 };
 
@@ -113,8 +157,9 @@ const DeliveryMap = () => {
   const [route, setRoute] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showSidebar, setShowSidebar] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [selectedMarker, setSelectedMarker] = useState(null);
   const [routeCoordinates, setRouteCoordinates] = useState([]);
   const [currentPointIndex, setCurrentPointIndex] = useState(0);
   const animationRef = useRef(null);
@@ -424,6 +469,15 @@ const DeliveryMap = () => {
     }
   }, [route]);
 
+  // Thêm useEffect để resize map khi sidebar thay đổi
+  useEffect(() => {
+    if (mapRef.current) {
+      setTimeout(() => {
+        mapRef.current.resize();
+      }, 300); // Đợi animation sidebar hoàn tất
+    }
+  }, [showSidebar]);
+
   const fetchRouteData = async () => {
     try {
       const response = await mockService.getRoute(id);
@@ -442,35 +496,32 @@ const DeliveryMap = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50">
+    <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
       {/* Responsive Header */}
       <div className="bg-white shadow-md px-3 sm:px-4 py-2 sm:py-3">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
             {/* Mobile-optimized navigation and info */}
-            <div className="flex items-start sm:items-center space-x-3 sm:space-x-4">
+            <div className="flex items-center space-x-3">
               <button
                 onClick={() => navigate(-1)}
-                className="p-2 sm:px-3 sm:py-2 text-gray-700 hover:text-blue-600 
+                className="p-2.5 text-gray-700 hover:text-blue-600 
                   bg-gray-100 hover:bg-blue-50 rounded-lg transition-all duration-200
                   focus:outline-none focus:ring-2 focus:ring-blue-500"
                 aria-label="Back to routes page"
               >
-                <FiArrowLeft className="w-5 h-5 sm:mr-2" />
-                <span className="hidden sm:inline font-medium">Back</span>
+                <FiArrowLeft className="w-5 h-5" />
               </button>
               
-              <div>
-                <h1 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center">
-                  <FiPackage className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-blue-600" />
-                  <span className="hidden sm:inline">Route Details</span>
-                  <span className="sm:hidden">Route</span>
+              <div className="flex-1">
+                <h1 className="text-lg font-bold text-gray-900 flex items-center">
+                  <FiPackage className="w-5 h-5 mr-2 text-blue-600" />
+                  Route Details
                 </h1>
                 {route && (
-                  <div className="mt-0.5 flex items-center text-xs sm:text-sm text-gray-600">
+                  <div className="mt-0.5 flex items-center text-xs text-gray-600">
                     <span className="font-medium">Code:</span>
-                    <span className="ml-1 sm:ml-2 px-1.5 sm:px-2 py-0.5 sm:py-1 
-                      bg-blue-100 text-blue-800 rounded-md">
+                    <span className="ml-1 px-1.5 py-0.5 bg-blue-100 text-blue-800 rounded-md">
                       {route.route_code}
                     </span>
                   </div>
@@ -480,15 +531,14 @@ const DeliveryMap = () => {
 
             {/* Mobile-optimized status */}
             {route && (
-              <div className="flex items-center justify-between sm:justify-end 
-                space-x-3 sm:space-x-6 bg-gray-50 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg">
+              <div className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg">
                 <div className="flex items-center">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2" />
-                  <span className="text-xs sm:text-sm font-medium text-gray-700">Live</span>
+                  <span className="text-xs font-medium text-gray-700">Live Tracking</span>
                 </div>
-                <div className="text-xs sm:text-sm text-gray-600">
+                <div className="text-xs text-gray-600 ml-4">
                   <div className="flex items-center">
-                    <FiClock className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-blue-600" />
+                    <FiClock className="w-3 h-3 mr-1 text-blue-600" />
                     <span>~{Math.ceil(route.distance * 3)} mins</span>
                   </div>
                 </div>
@@ -498,109 +548,274 @@ const DeliveryMap = () => {
         </div>
       </div>
 
-      {/* Main Content Area */}
-      <div className="flex-1 relative">
-        <div ref={mapContainerRef} className="absolute inset-0" />
-
-        {/* Controls and Sidebar Toggle */}
-        <div className="absolute top-2 right-2 flex flex-col items-end space-y-2 z-10">
-          {/* Zoom Controls */}
-          <div className="bg-white rounded-lg shadow-lg p-1 flex sm:flex-col space-x-1 sm:space-x-0 sm:space-y-1">
-            <button
-              onClick={() => mapRef.current?.zoomIn()}
-              className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-gray-700 
-                hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
-              aria-label="Zoom in"
-              title="Zoom In"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
-            </button>
-            <button
-              onClick={() => mapRef.current?.zoomOut()}
-              className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-gray-700 
-                hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
-              aria-label="Zoom out"
-              title="Zoom Out"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Sidebar Toggle - Mobile Only */}
-          <button
-            onClick={() => setShowSidebar(!showSidebar)}
-            className="md:hidden bg-white rounded-lg shadow-lg p-2 
-              hover:bg-blue-50 transition-colors"
-            aria-label="Toggle stops list"
-          >
-            {showSidebar ? 
-              <FiX className="w-5 h-5 text-gray-600" /> : 
-              <FiList className="w-5 h-5 text-gray-600" />
-            }
-          </button>
-        </div>
-
-        {/* Mobile Legend */}
-        <div className="fixed bottom-2 left-2 right-2 sm:left-1/2 sm:right-auto 
-          sm:transform sm:-translate-x-1/2 bg-white/90 backdrop-blur-sm rounded-lg 
-          shadow-lg p-2 sm:p-4 border border-gray-100/50 z-10">
-          <div className="grid grid-cols-3 sm:flex sm:items-center gap-1 sm:gap-6 text-center sm:text-left">
-            <div className="flex flex-col sm:flex-row items-center sm:items-center">
-              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-[#1B5E20] rounded-full sm:mr-2" />
-              <span className="text-[10px] sm:text-sm font-medium text-gray-700 mt-0.5 sm:mt-0">Start</span>
-            </div>
-            <div className="flex flex-col sm:flex-row items-center sm:items-center">
-              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-[#B71C1C] rounded-full sm:mr-2" />
-              <span className="text-[10px] sm:text-sm font-medium text-gray-700 mt-0.5 sm:mt-0">End</span>
-            </div>
-            <div className="flex flex-col sm:flex-row items-center sm:items-center">
-              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-[#1976D2] rounded-full sm:mr-2 animate-pulse" />
-              <span className="text-[10px] sm:text-sm font-medium text-gray-700 mt-0.5 sm:mt-0">Current</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Loading & Error States */}
-        {loading && (
-          <div className="absolute inset-0 bg-white bg-opacity-75 backdrop-blur-sm 
-            flex items-center justify-center z-50">
-            <div className="bg-white rounded-xl shadow-lg p-6 max-w-sm mx-auto text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 
-                border-t-transparent mx-auto" />
-              <p className="mt-4 text-lg font-medium text-gray-900">Loading map...</p>
-              <p className="mt-2 text-sm text-gray-600">Please wait while we fetch the latest information</p>
-            </div>
-          </div>
-        )}
-
-        {error && (
-          <div className="absolute inset-0 bg-white bg-opacity-75 backdrop-blur-sm 
-            flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-lg p-6 max-w-sm mx-auto text-center">
-              <div className="w-16 h-16 mx-auto text-red-500">
-                <svg className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+      {/* Main Content Area with Sidebar */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Left Sidebar - Full screen on mobile when open */}
+        <div className={`${showSidebar ? 'w-full sm:w-96' : 'w-0'} 
+          transition-all duration-300 ease-in-out flex-shrink-0
+          fixed sm:relative left-0 top-[57px] sm:top-0 h-[calc(100vh-57px)] sm:h-auto
+          bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 shadow-lg z-20`}>
+          <div className={`h-full flex flex-col ${showSidebar ? 'w-full sm:w-96' : 'w-0'} overflow-hidden`}>
+            {/* Sidebar Header */}
+            <div className="p-4 bg-white/20 backdrop-blur-sm border-b border-white/20">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-white flex items-center">
+                  <FiMapPin className="w-5 h-5 mr-2 text-white" />
+                  Route Details
+                </h2>
+                <button
+                  onClick={() => setShowSidebar(false)}
+                  className="p-2.5 hover:bg-white/20 rounded-lg
+                    transition-colors duration-200"
+                  aria-label="Close sidebar"
+                >
+                  <FiX className="w-6 h-6 text-white" />
+                </button>
               </div>
-              <h3 className="mt-4 text-lg font-semibold text-gray-900">Something went wrong</h3>
-              <p className="mt-2 text-sm text-gray-600">{error}</p>
+              {route && (
+                <div className="mt-2 flex items-center text-sm text-white">
+                  <FiPackage className="w-4 h-4 mr-2" />
+                  Route Code: <span className="ml-1 font-medium bg-white/20 px-2 py-0.5 rounded">{route.route_code}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Marker Information - Optimized for touch */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+              {route?.shops.map((shop, index) => {
+                const isFirst = index === 0;
+                const isLast = index === route.shops.length - 1;
+                return (
+                  <div
+                    key={shop.shop_details._id}
+                    className={`bg-white/20 backdrop-blur-sm rounded-xl
+                      border transition-all duration-200 active:scale-[0.98]
+                      hover:bg-white/30 ${
+                        selectedMarker === index
+                          ? 'border-white shadow-lg scale-[1.02]'
+                          : 'border-white/30'
+                      }`}
+                    onClick={() => {
+                      setSelectedMarker(index);
+                      mapRef.current?.flyTo({
+                        center: [shop.shop_details.longitude, shop.shop_details.latitude],
+                        zoom: 15,
+                        duration: 1500
+                      });
+                      // Close sidebar on mobile after selection
+                      if (window.innerWidth < 640) {
+                        setShowSidebar(false);
+                      }
+                    }}
+                  >
+                    <div className="p-4">
+                      {/* Marker Header */}
+                      <div className="flex items-center space-x-3">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center
+                          bg-white font-bold shadow-lg ${
+                            isFirst ? 'text-green-600' : isLast ? 'text-red-600' : 'text-blue-600'
+                          }`}>
+                          {index + 1}
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-white bg-white/20 px-2 py-0.5 rounded-md inline-block">
+                            {isFirst ? 'Starting Point' : isLast ? 'Destination' : 'Waypoint'}
+                          </h3>
+                          <p className="text-sm text-white mt-1">
+                            {shop.shop_details.shop_name}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Marker Details */}
+                      <div className="mt-4 space-y-3 bg-white/10 rounded-lg p-3">
+                        <div className="flex items-start space-x-2 text-sm">
+                          <FiMapPin className="w-4 h-4 text-white mt-0.5 flex-shrink-0" />
+                          <span className="text-white">
+                            {shop.shop_details.address}
+                          </span>
+                        </div>
+                        {shop.shop_details.phone && (
+                          <div className="flex items-center space-x-2 text-sm">
+                            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                            <span className="text-white">
+                              {shop.shop_details.phone}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Sidebar Footer - Sticky on mobile */}
+            <div className="p-4 bg-white/20 backdrop-blur-sm border-t border-white/20 sticky bottom-0">
+              <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center bg-white/10 px-3 py-2 rounded-full">
+                  <FiClock className="w-4 h-4 mr-2 text-white" />
+                  <span className="text-white">Total Distance</span>
+                </div>
+                <span className="font-medium text-white bg-white/20 px-3 py-2 rounded-full">
+                  {route ? `${Math.ceil(route.distance)} km` : '--'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Map Container */}
+        <div className="flex-1 relative">
+          <div ref={mapContainerRef} className="absolute inset-0 transition-all duration-300"
+            style={{ filter: isDarkMode ? 'brightness(0.8)' : 'none' }} />
+
+          {/* Toggle Sidebar Button - Enhanced for mobile */}
+          {!showSidebar && (
+            <button
+              onClick={() => setShowSidebar(true)}
+              className="absolute top-4 left-4 z-30 bg-blue-600 text-white
+                shadow-lg p-3 hover:bg-blue-700 transition-all duration-300 transform 
+                hover:scale-105 rounded-lg active:scale-95"
+              aria-label="Show sidebar"
+            >
+              <FiList className="w-6 h-6" />
+            </button>
+          )}
+
+          {/* Map Controls - Repositioned for better mobile access */}
+          <div className="absolute bottom-24 sm:top-4 right-4 flex flex-col items-end space-y-3 z-30">
+            {/* Theme Toggle */}
+            <button
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-3 
+                hover:bg-blue-50 transition-all duration-300 active:scale-95"
+              aria-label="Toggle theme"
+            >
+              {isDarkMode ? (
+                <svg className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
+            </button>
+
+            {/* Zoom Controls */}
+            <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-1.5 flex flex-col space-y-1">
               <button
-                onClick={() => navigate(-1)}
-                className="mt-4 w-full px-4 py-2 bg-blue-600 text-white rounded-lg 
-                  hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 
-                  focus:ring-blue-500 focus:ring-offset-2"
+                onClick={() => mapRef.current?.zoomIn()}
+                className="w-8 h-8 flex items-center justify-center text-gray-700 
+                  hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors
+                  active:scale-95"
+                aria-label="Zoom in"
               >
-                Go Back
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+              </button>
+              <button
+                onClick={() => mapRef.current?.zoomOut()}
+                className="w-8 h-8 flex items-center justify-center text-gray-700 
+                  hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors
+                  active:scale-95"
+                aria-label="Zoom out"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                </svg>
               </button>
             </div>
           </div>
-        )}
+
+          {/* Mobile Legend - Enhanced */}
+          <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 
+            bg-white/90 backdrop-blur-sm rounded-full shadow-lg py-2 px-4 
+            border border-gray-100/50 z-30">
+            <div className="flex items-center justify-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 bg-[#22C55E] rounded-full" />
+                <span className="text-xs font-medium text-gray-700">Start</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 bg-[#3B82F6] rounded-full animate-pulse" />
+                <span className="text-xs font-medium text-gray-700">Current</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 bg-[#EF4444] rounded-full" />
+                <span className="text-xs font-medium text-gray-700">End</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Loading & Error States */}
+          {loading && (
+            <div className="absolute inset-0 bg-white bg-opacity-75 backdrop-blur-sm 
+              flex items-center justify-center z-50">
+              <div className="bg-white rounded-xl shadow-lg p-6 max-w-sm mx-auto text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 
+                  border-t-transparent mx-auto" />
+                <p className="mt-4 text-lg font-medium text-gray-900">Loading map...</p>
+                <p className="mt-2 text-sm text-gray-600">Please wait while we fetch the latest information</p>
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div className="absolute inset-0 bg-white bg-opacity-75 backdrop-blur-sm 
+              flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-xl shadow-lg p-6 max-w-sm mx-auto text-center">
+                <div className="w-16 h-16 mx-auto text-red-500">
+                  <svg className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="mt-4 text-lg font-semibold text-gray-900">Something went wrong</h3>
+                <p className="mt-2 text-sm text-gray-600">{error}</p>
+                <button
+                  onClick={() => navigate(-1)}
+                  className="mt-4 w-full px-4 py-2 bg-blue-600 text-white rounded-lg 
+                    hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 
+                    focus:ring-blue-500 focus:ring-offset-2"
+                >
+                  Go Back
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
+
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 2px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 2px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 640px) {
+          .custom-scrollbar::-webkit-scrollbar {
+            width: 0px;
+          }
+        }
+      `}</style>
     </div>
   );
 };
