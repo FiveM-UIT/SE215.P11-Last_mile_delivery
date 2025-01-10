@@ -5,7 +5,7 @@
       "src": "frontend/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "frontend/build",
+        "distDir": "build",
         "buildCommand": "cd frontend && CI=false npm install && npm run build"
       }
     }
@@ -13,19 +13,20 @@
   "routes": [
     {
       "src": "/static/(.*)",
-      "dest": "/frontend/build/static/$1"
+      "dest": "/static/$1"
     },
     {
       "src": "/favicon.ico",
-      "dest": "/frontend/build/favicon.ico"
+      "dest": "/favicon.ico"
     },
     {
       "src": "/manifest.json",
-      "dest": "/frontend/build/manifest.json"
+      "dest": "/manifest.json"
     },
     {
       "src": "/(.*)",
-      "dest": "/frontend/build/index.html"
+      "dest": "/index.html"
     }
-  ]
+  ],
+  "outputDirectory": "frontend/build"
 } 
