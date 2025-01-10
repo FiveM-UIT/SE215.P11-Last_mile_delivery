@@ -248,6 +248,36 @@ const StudentInfoDialog = ({ isOpen, onClose }) => (
                       </p>
                     </div>
                   </div>
+                  
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-2">Student 2</h4>
+                    <div className="space-y-2">
+                      <p className="text-gray-700">
+                        <span className="font-medium">Full Name:</span> Tô Vĩnh Tiến
+                      </p>
+                      <p className="text-gray-700">
+                        <span className="font-medium">Student ID:</span> 22521474
+                      </p>
+                      <p className="text-gray-700">
+                        <span className="font-medium">Email:</span> 22521474@gm.uit.edu.vn
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-2">Student 2</h4>
+                    <div className="space-y-2">
+                      <p className="text-gray-700">
+                        <span className="font-medium">Full Name:</span> Đỗ Hồng Quân
+                      </p>
+                      <p className="text-gray-700">
+                        <span className="font-medium">Student ID:</span> 22521175
+                      </p>
+                      <p className="text-gray-700">
+                        <span className="font-medium">Email:</span> 22521175@gm.uit.edu.vn
+                      </p>
+                    </div>
+                  </div>
 
                   <div className="text-center text-gray-500 text-sm">
                     <p>Last Mile Delivery Management System</p>
