@@ -250,7 +250,7 @@ const StudentInfoDialog = ({ isOpen, onClose }) => (
                   </div>
                   
                   <div className="bg-gray-50 rounded-xl p-4">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-2">Student 2</h4>
+                    <h4 className="text-lg font-semibold text-gray-900 mb-2">Student 3</h4>
                     <div className="space-y-2">
                       <p className="text-gray-700">
                         <span className="font-medium">Full Name:</span> Tô Vĩnh Tiến
@@ -265,7 +265,7 @@ const StudentInfoDialog = ({ isOpen, onClose }) => (
                   </div>
 
                   <div className="bg-gray-50 rounded-xl p-4">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-2">Student 2</h4>
+                    <h4 className="text-lg font-semibold text-gray-900 mb-2">Student 4</h4>
                     <div className="space-y-2">
                       <p className="text-gray-700">
                         <span className="font-medium">Full Name:</span> Đỗ Hồng Quân
