@@ -18,7 +18,7 @@
 |   1   |22521312|    Trần Nhật Tân    |22521312@gm.uit.edu.vn|[Shiengg](https://github.com/Shiengg) |
 |   2   |22521693|    Nguyễn Duy Vũ    |22521693@gm.uit.edu.vn|[Torrence](https://github.com/LilRaynee) |
 |   3   |22521474|    Tô Vĩnh Tiến     |22521474@gm.uit.edu.vn|[Terry-UIT](https://github.com/Terry-UIT) |
-|   4   |22521693|    Đỗ Hồng Quân     |22521693@gm.uit.edu.vn|[Đỗ Hồng Quân](https://github.com/quandohong109) |
+|   4   |22521175|    Đỗ Hồng Quân     |22521693@gm.uit.edu.vn|[Đỗ Hồng Quân](https://github.com/quandohong109) |
 
 
 ## 🛠 Công nghệ sử dụng
