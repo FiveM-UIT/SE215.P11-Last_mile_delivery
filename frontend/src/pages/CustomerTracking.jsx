@@ -421,7 +421,7 @@ const CustomerTracking = () => {
                 type="text"
                 value={routeCode}
                 onChange={handleInputChange}
-                placeholder="Enter route code (e.g., RT000001)"
+                placeholder="Enter route code (e.g., RT001)"
                 className="w-full px-4 sm:px-8 py-3 sm:py-4 pl-12 sm:pl-16 text-base sm:text-lg rounded-xl sm:rounded-2xl 
                   border-2 border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 
                   focus:border-blue-500 transition-all duration-300 shadow-sm"
